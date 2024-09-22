@@ -1,14 +1,28 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
+import { Component, signal } from '@angular/core';
+import { OptionsComponent } from './options.component';
+
+export interface Option {
+  label: string;
+  action: string;
+}
 
 @Component({
   standalone: true,
-  imports: [NxWelcomeComponent, RouterModule],
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  template: `<app-options [options]="options()" />`,
+  imports: [OptionsComponent]
 })
 export class AppComponent {
-  title = 'angular-signal-effects';
+  options = signal<Option[]>([
+    { label: 'Account settings', action: 'account' },
+    { label: 'Support', action: 'support' },
+    { label: 'License', action: 'license' },
+  ]);
+
+  constructor() {
+    setTimeout(() => {
+      console.log('Llegan nuevas opciones!');
+      this.options.set([...this.options()]);
+    }, 7000);
+  }
 }
